@@ -7,35 +7,43 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Base de Datos</h1>
-    </header>
+    <!-- El contenido HTML generado por Google Apps Script se insertará aquí -->
+    <div id="app-content">
+        <!-- Mensaje de carga inicial (opcional) -->
+        <p id="loadingMessage">Cargando datos...</p>
+        <p id="errorMessage" class="error-message" style="display:none;">Error al cargar los datos. Por favor, intenta de nuevo más tarde.</p>
+    </div>
 
-    <main>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar Documento o Número...">
-        </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL de la aplicación web de Google Apps Script
+            const spreadsheetHtmlUrl = 'YOUR_WEB_APP_URL_HERE'; // <-- ¡REEMPLAZA ESTO CON TU URL DE APP SCRIPT!
+            const appContentDiv = document.getElementById('app-content');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
 
-        <div class="table-container">
-            <table id="dataTable">
-                <thead>
-                    <tr>
-                        <!-- Los encabezados se insertarán aquí con JavaScript -->
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Los datos de la tabla se insertarán aquí con JavaScript -->
-                </tbody>
-            </table>
-            <p id="loadingMessage">Cargando datos...</p>
-            <p id="errorMessage" class="error-message" style="display:none;">Error al cargar los datos. Por favor, intenta de nuevo más tarde.</p>
-        </div>
-    </main>
+            fetch(spreadsheetHtmlUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text(); // Obtener respuesta como texto (HTML)
+                })
+                .then(html => {
+                    loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
+                    appContentDiv.innerHTML = html; // Insertar HTML en el div contenedor
 
-    <footer>
-        <p>© 2024 Mi Base de Datos. Todos los derechos reservados.</p>
-    </footer>
-
-    <script src="script.js"></script>
+                    // Después de insertar el HTML, inicializar el JavaScript inline (si es necesario)
+                    // En este caso, el JavaScript para el buscador ya está INLINE en el HTML
+                    // y debería funcionar automáticamente.
+                })
+                .catch(error => {
+                    loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
+                    errorMessage.style.display = 'block'; // Mostrar mensaje de error
+                    errorMessage.textContent = 'Error al cargar los datos: ' + error.message;
+                    console.error('Error fetching HTML:', error);
+                });
+        });
+    </script>
 </body>
 </html>
