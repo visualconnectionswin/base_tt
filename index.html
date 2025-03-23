@@ -1,49 +1,11 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base de Datos</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Redireccionando a la Base de Datos...</title>
+    <meta http-equiv="refresh" content="0;url=YOUR_WEB_APP_URL_HERE"> <!-- Redirección inmediata -->
 </head>
 <body>
-    <!-- El contenido HTML generado por Google Apps Script se insertará aquí -->
-    <div id="app-content">
-        <!-- Mensaje de carga inicial (opcional) -->
-        <p id="loadingMessage">Cargando datos...</p>
-        <p id="errorMessage" class="error-message" style="display:none;">Error al cargar los datos. Por favor, intenta de nuevo más tarde.</p>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // URL de la aplicación web de Google Apps Script
-            const spreadsheetHtmlUrl = 'https://script.google.com/macros/s/AKfycbxpWjhfwkDUWL_UGHSl0oSmb7C622EfZgg4C4-Ps2JhItM15URpSHG_jwM_NVVxlvVP9A/exec'; // <-- ¡REEMPLAZA ESTO CON TU URL DE APP SCRIPT!
-            const appContentDiv = document.getElementById('app-content');
-            const loadingMessage = document.getElementById('loadingMessage');
-            const errorMessage = document.getElementById('errorMessage');
-
-            fetch(spreadsheetHtmlUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text(); // Obtener respuesta como texto (HTML)
-                })
-                .then(html => {
-                    loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
-                    appContentDiv.innerHTML = html; // Insertar HTML en el div contenedor
-
-                    // Después de insertar el HTML, inicializar el JavaScript inline (si es necesario)
-                    // En este caso, el JavaScript para el buscador ya está INLINE en el HTML
-                    // y debería funcionar automáticamente.
-                })
-                .catch(error => {
-                    loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
-                    errorMessage.style.display = 'block'; // Mostrar mensaje de error
-                    errorMessage.textContent = 'Error al cargar los datos: ' + error.message;
-                    console.error('Error fetching HTML:', error);
-                });
-        });
-    </script>
+    <p>Si no eres redirigido automáticamente, haz clic <a href="https://script.google.com/macros/s/AKfycbxpWjhfwkDUWL_UGHSl0oSmb7C622EfZgg4C4-Ps2JhItM15URpSHG_jwM_NVVxlvVP9A/exec">aquí</a> para ver la Base de Datos.</p>
 </body>
 </html>
