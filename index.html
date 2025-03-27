@@ -74,6 +74,7 @@
       margin-bottom: 25px;
     }
 
+    /* Se elimina maxlength del input para controlar la cantidad en código */
     .search-input {
       flex-grow: 1;
       padding: 12px 15px;
@@ -201,7 +202,7 @@
     </div>
 
     <div class="search-wrapper">
-      <input type="text" id="buscador" class="search-input" placeholder="Ingrese hasta 9 dígitos" maxlength="9" />
+      <input type="text" id="buscador" class="search-input" placeholder="Ingrese hasta 9 dígitos" />
     </div>
 
     <div id="resultados"></div>
@@ -237,9 +238,10 @@
       return texto.replace(/\s+/g, '').replace(/\D/g, '');
     }
     
-    // Función para dar formato visual separando cada 3 dígitos con un espacio.
+    // Función que formatea el número en grupos de 3 dígitos desde la izquierda.
     function formatNumber(value) {
-      return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      const groups = value.match(/.{1,3}/g);
+      return groups ? groups.join(" ") : "";
     }
 
     // Buscar únicamente en el campo "NÚMERO"
@@ -340,7 +342,11 @@
     document.getElementById('buscador').addEventListener('input', function() {
       // Se obtiene el valor sin espacios y sin caracteres no numéricos.
       let rawValue = limpiarEntrada(this.value);
-      // Se formatea visualmente el número, separando cada 3 dígitos.
+      // Se limita a 9 dígitos
+      if (rawValue.length > 9) {
+        rawValue = rawValue.substring(0, 9);
+      }
+      // Se formatea visualmente el número agrupándolo de 3 en 3 desde la izquierda.
       this.value = formatNumber(rawValue);
 
       if (rawValue.length < 5) {
