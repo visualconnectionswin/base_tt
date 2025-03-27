@@ -236,6 +236,11 @@
     function limpiarEntrada(texto) {
       return texto.replace(/\s+/g, '').replace(/\D/g, '');
     }
+    
+    // Función para dar formato visual separando cada 3 dígitos con un espacio.
+    function formatNumber(value) {
+      return value.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
 
     // Buscar únicamente en el campo "NÚMERO"
     function buscarRegistro(valor) {
@@ -293,7 +298,7 @@
         copyDiv.addEventListener('click', () => {
           let textoACopiar = "";
           if (reg['NOMBRE']) {
-            textoACopiar = "Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
+            textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
           } else {
             textoACopiar = "DNI: " + reg['DOCUMENTO'];
           }
@@ -331,20 +336,19 @@
     }
 
     // Se muestran resultados solo si se ingresan al menos 5 dígitos.
-    // Además, si se ingresan 9 dígitos se utiliza solo la parte de los 5 primeros.
+    // Si se ingresan más de 5 dígitos se utiliza siempre la parte de los 5 primeros para la búsqueda.
     document.getElementById('buscador').addEventListener('input', function() {
-      let valor = limpiarEntrada(this.value);
-      if (valor.length > 9) {
-        valor = valor.substring(0, 9);
-      }
-      this.value = valor;
+      // Se obtiene el valor sin espacios y sin caracteres no numéricos.
+      let rawValue = limpiarEntrada(this.value);
+      // Se formatea visualmente el número, separando cada 3 dígitos.
+      this.value = formatNumber(rawValue);
 
-      if (valor.length < 5) {
+      if (rawValue.length < 5) {
         document.getElementById('resultados').innerHTML = "";
         return;
       }
 
-      let searchTerm = (valor.length === 9) ? valor.substring(0, 5) : valor;
+      let searchTerm = (rawValue.length > 5) ? rawValue.substring(0, 5) : rawValue;
       const resultados = buscarRegistro(searchTerm);
       mostrarResultados(resultados, searchTerm);
     });
