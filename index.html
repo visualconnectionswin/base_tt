@@ -1,11 +1,304 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Redireccionando a la Base de Datos...</title>
-    <meta http-equiv="refresh" content="0;url=https://script.google.com/macros/s/AKfycbxpWjhfwkDUWL_UGHSl0oSmb7C622EfZgg4C4-Ps2JhItM15URpSHG_jwM_NVVxlvVP9A/exec"> <!-- Redirección inmediata -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio OSIPTEL</title>
+    <link rel="icon" type="image/png" href="image.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #007bff;
+            --background-light: #f4f7fa;
+            --text-dark: #2c3e50;
+            --border-soft: #e0e6ed;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-logo {
+            margin-right: 20px;
+        }
+
+        .header-logo img {
+            width: 100px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .header-text {
+            flex-grow: 1;
+        }
+
+        .header-text h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header-text p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        .search-wrapper {
+            display: flex;
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--border-soft);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+
+        #resultados {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .resultado-item {
+            background-color: white;
+            border: 1px solid var(--border-soft);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .resultado-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .resultado-detalle {
+            flex-grow: 1;
+        }
+
+        .resultado-nombre {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .resultado-documento {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .resultado-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .resultado-copy, .resultado-buscar {
+            color: var(--secondary-color);
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 5px;
+            text-align: right;
+        }
+
+        .resultado-buscar {
+            color: #28a745;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 20px 15px;
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-logo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <p>Si no eres redirigido automáticamente, haz clic <a href="https://script.google.com/macros/s/AKfycbxpWjhfwkDUWL_UGHSl0oSmb7C622EfZgg4C4-Ps2JhItM15URpSHG_jwM_NVVxlvVP9A/exec">aquí</a> para ver la Base de Datos.</p>
+    <div class="container">
+        <div class="header">
+            <div class="header-logo">
+                <img src="image.png" alt="OSIPTEL Logo">
+            </div>
+            <div class="header-text">
+                <h1>Directorio OSIPTEL</h1>
+                <p>Búsqueda de Líneas Telefónicas</p>
+            </div>
+        </div>
+        
+        <div class="search-wrapper">
+            <input type="text" id="buscador" class="search-input" placeholder="Ingrese hasta 9 dígitos" maxlength="9" />
+        </div>
+
+        <div id="resultados"></div>
+    </div>
+
+    <script>
+        let registros = [];
+        
+        async function cargarCSV() {
+            try {
+                const response = await fetch('data.csv');
+                const data = await response.text();
+                parseCSV(data);
+            } catch (error) {
+                console.error("Error al cargar CSV:", error);
+            }
+        }
+        
+        function parseCSV(data) {
+            const lineas = data.trim().split('\n');
+            const encabezados = lineas[0].split(',').map(h => h.trim());
+            
+            registros = lineas.slice(1).map(linea => {
+                const valores = linea.split(',').map(v => v.trim());
+                let obj = {};
+                encabezados.forEach((header, i) => {
+                    obj[header] = valores[i];
+                });
+                return obj;
+            });
+        }
+        
+        function limpiarEntrada(texto) {
+            return texto.replace(/\s+/g, '').replace(/\D/g, '');
+        }
+        
+        function buscarRegistro(valor) {
+            const clave = valor.substring(0, 5);
+            return registros.filter(reg => reg['NÚMERO'] && reg['NÚMERO'].startsWith(clave));
+        }
+        
+        function mostrarResultados(resultados, entrada) {
+            const contenedor = document.getElementById('resultados');
+            contenedor.innerHTML = "";
+            
+            if (resultados.length === 0) {
+                contenedor.innerHTML = `<div class="resultado-item"><p>No se encontraron resultados para ${entrada}.</p></div>`;
+                return;
+            }
+            
+            resultados.forEach(reg => {
+                const item = document.createElement('div');
+                item.className = "resultado-item";
+                
+                const detalles = document.createElement('div');
+                detalles.className = "resultado-detalle";
+                
+                const nombreDiv = document.createElement('div');
+                nombreDiv.className = "resultado-nombre";
+                nombreDiv.textContent = reg['NOMBRE'] || 'Nombre no disponible';
+                
+                const documentoDiv = document.createElement('div');
+                documentoDiv.className = "resultado-documento";
+                documentoDiv.textContent = `DNI: ${reg['DOCUMENTO']}`;
+                
+                const acciones = document.createElement('div');
+                acciones.className = "resultado-actions";
+                
+                const copyDiv = document.createElement('div');
+                copyDiv.className = "resultado-copy";
+                copyDiv.textContent = "Copiar DNI";
+                
+                const buscarDiv = document.createElement('div');
+                buscarDiv.className = "resultado-buscar";
+                buscarDiv.textContent = "Buscar en eldni.com";
+                
+                copyDiv.addEventListener('click', () => {
+                    copiarAlPortapapeles(reg['DOCUMENTO']);
+                });
+                
+                buscarDiv.addEventListener('click', () => {
+                    window.open(`https://eldni.com/pe/buscar-por-dni`, '_blank');
+                });
+                
+                detalles.appendChild(nombreDiv);
+                detalles.appendChild(documentoDiv);
+                
+                acciones.appendChild(copyDiv);
+                acciones.appendChild(buscarDiv);
+                
+                item.appendChild(detalles);
+                item.appendChild(acciones);
+                
+                contenedor.appendChild(item);
+            });
+        }
+        
+        function copiarAlPortapapeles(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("Copiado: " + texto);
+            }).catch(err => {
+                console.error("Error al copiar:", err);
+            });
+        }
+        
+        document.getElementById('buscador').addEventListener('input', function() {
+            let valor = limpiarEntrada(this.value);
+            
+            if (valor.length > 9) {
+                valor = valor.substring(0, 9);
+            }
+            this.value = valor;
+            
+            if (valor.length >= 5 || valor.length === 9) {
+                const resultados = buscarRegistro(valor);
+                mostrarResultados(resultados, valor);
+            } else {
+                document.getElementById('resultados').innerHTML = "";
+            }
+        });
+        
+        cargarCSV();
+    </script>
 </body>
 </html>
