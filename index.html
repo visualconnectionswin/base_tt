@@ -293,7 +293,7 @@
         copyDiv.addEventListener('click', () => {
           let textoACopiar = "";
           if (reg['NOMBRE']) {
-            textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
+            textoACopiar = "Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
           } else {
             textoACopiar = "DNI: " + reg['DOCUMENTO'];
           }
