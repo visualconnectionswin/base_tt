@@ -145,6 +145,19 @@
             color: #28a745;
         }
 
+        #mensaje-copia {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+
         @media (max-width: 640px) {
             .container {
                 margin: 20px 15px;
@@ -164,6 +177,7 @@
     </style>
 </head>
 <body>
+    <div id="mensaje-copia">Copiado!</div>
     <div class="container">
         <div class="header">
             <div class="header-logo">
@@ -214,8 +228,15 @@
         }
         
         function buscarRegistro(valor) {
-            const clave = valor.substring(0, 5);
-            return registros.filter(reg => reg['NÚMERO'] && reg['NÚMERO'].startsWith(clave));
+            // Buscar por cualquier coincidencia parcial
+            return registros.filter(reg => 
+                // Buscar en el número completo
+                reg['NÚMERO']?.includes(valor) ||
+                // Buscar en el documento
+                reg['DOCUMENTO']?.includes(valor) ||
+                // Buscar en el nombre
+                reg['NOMBRE']?.toLowerCase().includes(valor.toLowerCase())
+            );
         }
         
         function mostrarResultados(resultados, entrada) {
@@ -240,7 +261,10 @@
                 
                 const documentoDiv = document.createElement('div');
                 documentoDiv.className = "resultado-documento";
-                documentoDiv.textContent = `DNI: ${reg['DOCUMENTO']}`;
+                documentoDiv.innerHTML = `
+                    DNI: ${reg['DOCUMENTO']}<br>
+                    Número: ${reg['NÚMERO']}
+                `;
                 
                 const acciones = document.createElement('div');
                 acciones.className = "resultado-actions";
@@ -251,14 +275,14 @@
                 
                 const buscarDiv = document.createElement('div');
                 buscarDiv.className = "resultado-buscar";
-                buscarDiv.textContent = "Buscar en eldni.com";
+                buscarDiv.textContent = "Buscar Nombre";
                 
                 copyDiv.addEventListener('click', () => {
                     copiarAlPortapapeles(reg['DOCUMENTO']);
                 });
                 
                 buscarDiv.addEventListener('click', () => {
-                    window.open(`https://eldni.com/pe/buscar-por-dni`, '_blank');
+                    window.open(`https://eldni.com/pe/buscar-por-nombre?nombre=${encodeURIComponent(reg['NOMBRE'])}`, '_blank');
                 });
                 
                 detalles.appendChild(nombreDiv);
@@ -276,7 +300,11 @@
         
         function copiarAlPortapapeles(texto) {
             navigator.clipboard.writeText(texto).then(() => {
-                alert("Copiado: " + texto);
+                const mensajeCopia = document.getElementById('mensaje-copia');
+                mensajeCopia.style.display = 'block';
+                setTimeout(() => {
+                    mensajeCopia.style.display = 'none';
+                }, 2000);
             }).catch(err => {
                 console.error("Error al copiar:", err);
             });
@@ -290,7 +318,7 @@
             }
             this.value = valor;
             
-            if (valor.length >= 5 || valor.length === 9) {
+            if (valor.length > 0) {
                 const resultados = buscarRegistro(valor);
                 mostrarResultados(resultados, valor);
             } else {
