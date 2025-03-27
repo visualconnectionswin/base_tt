@@ -126,6 +126,12 @@
       color: #6c757d;
       font-size: 0.9rem;
     }
+    
+    .resultado-numero {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
 
     .resultado-actions {
       display: flex;
@@ -231,7 +237,7 @@
       return texto.replace(/\s+/g, '').replace(/\D/g, '');
     }
 
-    // Ahora solo se busca en el campo "NÚMERO"
+    // Buscar únicamente en el campo "NÚMERO"
     function buscarRegistro(valor) {
       return registros.filter(reg => reg['NÚMERO']?.includes(valor));
     }
@@ -245,22 +251,37 @@
         return;
       }
 
-      resultados.forEach(reg => {
+      // Filtrar duplicados basados en el valor de "NÚMERO"
+      const numerosVistos = new Set();
+      const resultadosUnicos = resultados.filter(reg => {
+        if (!reg['NÚMERO'] || numerosVistos.has(reg['NÚMERO'])) {
+          return false;
+        }
+        numerosVistos.add(reg['NÚMERO']);
+        return true;
+      });
+
+      resultadosUnicos.forEach(reg => {
         const item = document.createElement('div');
         item.className = "resultado-item";
 
         const detalles = document.createElement('div');
         detalles.className = "resultado-detalle";
 
-        // Mostrar nombre (si está disponible)
+        // Mostrar el número del registro
+        const numeroDiv = document.createElement('div');
+        numeroDiv.className = "resultado-numero";
+        numeroDiv.textContent = "Número: " + (reg['NÚMERO'] || "No disponible");
+
+        // Mostrar el nombre (si está disponible)
         const nombreDiv = document.createElement('div');
         nombreDiv.className = "resultado-nombre";
         nombreDiv.textContent = reg['NOMBRE'] || 'Nombre no disponible';
 
-        // Mostrar solo DNI en lugar de Número y DNI
+        // Mostrar el DNI
         const documentoDiv = document.createElement('div');
         documentoDiv.className = "resultado-documento";
-        documentoDiv.innerHTML = `DNI: ${reg['DOCUMENTO']}`;
+        documentoDiv.textContent = "DNI: " + (reg['DOCUMENTO'] || "No disponible");
 
         const acciones = document.createElement('div');
         acciones.className = "resultado-actions";
@@ -271,7 +292,7 @@
         copyDiv.textContent = "Copiar";
         copyDiv.addEventListener('click', () => {
           let textoACopiar = "";
-          if(reg['NOMBRE']){
+          if (reg['NOMBRE']) {
             textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
           } else {
             textoACopiar = "DNI: " + reg['DOCUMENTO'];
@@ -287,7 +308,7 @@
         });
 
         // Si no existe nombre se muestra el enlace para buscarlo en eldni.com
-        if(!reg['NOMBRE']){
+        if (!reg['NOMBRE']) {
           const buscarDiv = document.createElement('div');
           buscarDiv.className = "resultado-buscar";
           buscarDiv.textContent = "Buscar Nombre";
@@ -298,8 +319,11 @@
         }
 
         acciones.appendChild(copyDiv);
+
+        detalles.appendChild(numeroDiv);
         detalles.appendChild(nombreDiv);
         detalles.appendChild(documentoDiv);
+
         item.appendChild(detalles);
         item.appendChild(acciones);
         contenedor.appendChild(item);
@@ -307,19 +331,19 @@
     }
 
     // Se muestran resultados solo si se ingresan al menos 5 dígitos.
-    // Además, si se ingresa 9 dígitos se usa solo la parte de los 5 primeros.
+    // Además, si se ingresan 9 dígitos se utiliza solo la parte de los 5 primeros.
     document.getElementById('buscador').addEventListener('input', function() {
       let valor = limpiarEntrada(this.value);
       if (valor.length > 9) {
         valor = valor.substring(0, 9);
       }
       this.value = valor;
-      
+
       if (valor.length < 5) {
         document.getElementById('resultados').innerHTML = "";
         return;
       }
-      
+
       let searchTerm = (valor.length === 9) ? valor.substring(0, 5) : valor;
       const resultados = buscarRegistro(searchTerm);
       mostrarResultados(resultados, searchTerm);
