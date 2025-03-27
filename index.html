@@ -228,15 +228,8 @@
         }
         
         function buscarRegistro(valor) {
-            // Buscar por cualquier coincidencia parcial
-            return registros.filter(reg => 
-                // Buscar en el número completo
-                reg['NÚMERO']?.includes(valor) ||
-                // Buscar en el documento
-                reg['DOCUMENTO']?.includes(valor) ||
-                // Buscar en el nombre
-                reg['NOMBRE']?.toLowerCase().includes(valor.toLowerCase())
-            );
+            // Se filtra solo por coincidencia parcial en el campo "NÚMERO"
+            return registros.filter(reg => reg['NÚMERO']?.includes(valor));
         }
         
         function mostrarResultados(resultados, entrada) {
@@ -281,8 +274,9 @@
                     copiarAlPortapapeles(reg['DOCUMENTO']);
                 });
                 
+                // Enlace de búsqueda en eldni.com con URL más corta
                 buscarDiv.addEventListener('click', () => {
-                    window.open(`https://eldni.com/pe/buscar-por-nombre?nombre=${encodeURIComponent(reg['NOMBRE'])}`, '_blank');
+                    window.open(`https://eldni.com/buscar?nombre=${encodeURIComponent(reg['NOMBRE'])}`, '_blank');
                 });
                 
                 detalles.appendChild(nombreDiv);
