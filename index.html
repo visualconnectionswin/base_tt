@@ -299,7 +299,7 @@
           copyDiv.className = "resultado-copy";
           copyDiv.textContent = "Copiar";
           copyDiv.addEventListener('click', () => {
-            const textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
+            const textoACopiar = "Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
             const textoOriginal = copyDiv.textContent;
             copyDiv.textContent = "Copiado!";
             navigator.clipboard.writeText(textoACopiar).catch(err => {
@@ -317,7 +317,7 @@
           copyDiv.className = "resultado-copy";
           copyDiv.textContent = "Copiar DNI";
           copyDiv.addEventListener('click', () => {
-            const textoACopiar = "DNI: " + reg['DOCUMENTO'];
+            const textoACopiar = reg['DOCUMENTO'];
             const textoOriginal = copyDiv.textContent;
             copyDiv.textContent = "DNI copiado";
             navigator.clipboard.writeText(textoACopiar).catch(err => {
