@@ -293,39 +293,50 @@
         const acciones = document.createElement('div');
         acciones.className = "resultado-actions";
 
-        // Botón para copiar (nombre y DNI) sin incluir el número
-        const copyDiv = document.createElement('div');
-        copyDiv.className = "resultado-copy";
-        copyDiv.textContent = "Copiar";
-        copyDiv.addEventListener('click', () => {
-          let textoACopiar = "";
-          if (reg['NOMBRE']) {
-            textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
-          } else {
-            textoACopiar = "DNI: " + reg['DOCUMENTO'];
-          }
-          const textoOriginal = copyDiv.textContent;
-          copyDiv.textContent = "Copiado!";
-          navigator.clipboard.writeText(textoACopiar).catch(err => {
-            console.error("Error al copiar:", err);
+        // Si existe nombre, se muestra botón de copiar "Copiar"
+        if(reg['NOMBRE']){
+          const copyDiv = document.createElement('div');
+          copyDiv.className = "resultado-copy";
+          copyDiv.textContent = "Copiar";
+          copyDiv.addEventListener('click', () => {
+            const textoACopiar = reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
+            const textoOriginal = copyDiv.textContent;
+            copyDiv.textContent = "Copiado!";
+            navigator.clipboard.writeText(textoACopiar).catch(err => {
+              console.error("Error al copiar:", err);
+            });
+            setTimeout(() => {
+              copyDiv.textContent = textoOriginal;
+            }, 2000);
           });
-          setTimeout(() => {
-            copyDiv.textContent = textoOriginal;
-          }, 2000);
-        });
-
-        // Si no existe nombre se muestra el enlace para buscarlo en eldni.com
-        if (!reg['NOMBRE']) {
+          acciones.appendChild(copyDiv);
+        } else {
+          // Si no existe nombre, se muestran dos opciones:
+          // 1. Botón "Copiar DNI" que copia el DNI y cambia su texto a "DNI copiado"
+          const copyDiv = document.createElement('div');
+          copyDiv.className = "resultado-copy";
+          copyDiv.textContent = "Copiar DNI";
+          copyDiv.addEventListener('click', () => {
+            const textoACopiar = "DNI: " + reg['DOCUMENTO'];
+            const textoOriginal = copyDiv.textContent;
+            copyDiv.textContent = "DNI copiado";
+            navigator.clipboard.writeText(textoACopiar).catch(err => {
+              console.error("Error al copiar:", err);
+            });
+            setTimeout(() => {
+              copyDiv.textContent = textoOriginal;
+            }, 2000);
+          });
+          acciones.appendChild(copyDiv);
+          // 2. Enlace "Buscar Nombre" que redirige a la página con el parámetro dni
           const buscarDiv = document.createElement('div');
           buscarDiv.className = "resultado-buscar";
           buscarDiv.textContent = "Buscar Nombre";
           buscarDiv.addEventListener('click', () => {
-            window.open(`https://eldni.com/pe/buscar-por-nombre?nombre=${encodeURIComponent(reg['NOMBRE'] || "")}`, '_blank');
+            window.open(`https://eldni.com/pe/buscar-por-dni?dni=${encodeURIComponent(reg['DOCUMENTO'] || "")}`, '_blank');
           });
           acciones.appendChild(buscarDiv);
         }
-
-        acciones.appendChild(copyDiv);
 
         detalles.appendChild(numeroDiv);
         detalles.appendChild(nombreDiv);
