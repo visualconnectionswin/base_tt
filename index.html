@@ -299,7 +299,7 @@
           copyDiv.className = "resultado-copy";
           copyDiv.textContent = "Copiar";
           copyDiv.addEventListener('click', () => {
-            const textoACopiar = "Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
+            const textoACopiar = "Titular de la línea: Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
             const textoOriginal = copyDiv.textContent;
             copyDiv.textContent = "Copiado!";
             navigator.clipboard.writeText(textoACopiar).catch(err => {
