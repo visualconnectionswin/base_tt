@@ -14,20 +14,17 @@
       --text-dark: #2c3e50;
       --border-soft: #e0e6ed;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Roboto', sans-serif;
       background-color: var(--background-light);
       color: var(--text-dark);
       line-height: 1.6;
     }
-
     .container {
       max-width: 800px;
       margin: 40px auto;
@@ -36,44 +33,36 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       padding: 30px;
     }
-
     .header {
       display: flex;
       align-items: center;
       margin-bottom: 30px;
     }
-
     .header-logo {
       margin-right: 20px;
     }
-
     .header-logo img {
       width: 100px;
       height: auto;
       border-radius: 8px;
     }
-
     .header-text {
       flex-grow: 1;
     }
-
     .header-text h1 {
       color: var(--primary-color);
       font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 10px;
     }
-
     .header-text p {
       color: #6c757d;
       font-size: 1rem;
     }
-
     .search-wrapper {
       display: flex;
       margin-bottom: 25px;
     }
-
     /* Se elimina maxlength del input para controlar la cantidad en código */
     .search-input {
       flex-grow: 1;
@@ -83,19 +72,16 @@
       font-size: 1rem;
       transition: all 0.3s ease;
     }
-
     .search-input:focus {
       outline: none;
       border-color: var(--secondary-color);
       box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
     }
-
     #resultados {
       background-color: #f8f9fa;
       border-radius: 8px;
       padding: 20px;
     }
-
     .resultado-item {
       background-color: white;
       border: 1px solid var(--border-soft);
@@ -107,39 +93,32 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .resultado-item:hover {
       transform: translateY(-3px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
     .resultado-detalle {
       flex-grow: 1;
     }
-
     .resultado-nombre {
       font-weight: 600;
       color: var(--primary-color);
       margin-bottom: 5px;
     }
-
     .resultado-documento {
       color: #6c757d;
       font-size: 0.9rem;
     }
-    
     .resultado-numero {
       color: #6c757d;
       font-size: 0.9rem;
       margin-bottom: 5px;
     }
-
     .resultado-actions {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-
     .resultado-copy,
     .resultado-buscar {
       font-weight: 500;
@@ -147,16 +126,13 @@
       margin-bottom: 5px;
       text-align: right;
     }
-
     .resultado-copy {
       color: var(--secondary-color);
     }
-
     .resultado-buscar {
       color: #28a745;
-      font-size: 0.8rem; /* Tamaño algo menor */
+      font-size: 0.8rem;
     }
-
     #mensaje-copia {
       position: fixed;
       top: 20px;
@@ -169,18 +145,15 @@
       display: none;
       z-index: 1000;
     }
-
     @media (max-width: 640px) {
       .container {
         margin: 20px 15px;
         padding: 20px;
       }
-
       .header {
         flex-direction: column;
         text-align: center;
       }
-
       .header-logo {
         margin-right: 0;
         margin-bottom: 15px;
@@ -200,14 +173,11 @@
         <p>Búsqueda de Líneas Telefónicas</p>
       </div>
     </div>
-
     <div class="search-wrapper">
       <input type="text" id="buscador" class="search-input" placeholder="Ingrese hasta 9 dígitos" />
     </div>
-
     <div id="resultados"></div>
   </div>
-
   <script>
     let registros = [];
 
@@ -258,17 +228,8 @@
         return;
       }
 
-      // Filtrar duplicados basados en el valor de "NÚMERO"
-      const numerosVistos = new Set();
-      const resultadosUnicos = resultados.filter(reg => {
-        if (!reg['NÚMERO'] || numerosVistos.has(reg['NÚMERO'])) {
-          return false;
-        }
-        numerosVistos.add(reg['NÚMERO']);
-        return true;
-      });
-
-      resultadosUnicos.forEach(reg => {
+      // Se eliminó el filtrado de duplicados para mostrar todos los registros
+      resultados.forEach(reg => {
         const item = document.createElement('div');
         item.className = "resultado-item";
 
