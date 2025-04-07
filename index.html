@@ -13,6 +13,8 @@
       --background-light: #f4f7fa;
       --text-dark: #2c3e50;
       --border-soft: #e0e6ed;
+      --success-color: #28a745;
+      --gray-text: #6c757d;
     }
     * {
       margin: 0;
@@ -24,14 +26,21 @@
       background-color: var(--background-light);
       color: var(--text-dark);
       line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
     }
     .container {
       max-width: 800px;
-      margin: 40px auto;
+      width: 100%;
+      margin: 0 auto;
       background-color: white;
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       padding: 30px;
+      transition: all 0.3s ease;
     }
     .header {
       display: flex;
@@ -40,33 +49,36 @@
     }
     .header-logo {
       margin-right: 20px;
+      flex-shrink: 0;
     }
     .header-logo img {
-      width: 100px;
+      width: 80px;
       height: auto;
       border-radius: 8px;
+      transition: all 0.3s ease;
     }
     .header-text {
       flex-grow: 1;
     }
     .header-text h1 {
       color: var(--primary-color);
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 10px;
+      transition: font-size 0.3s ease;
     }
     .header-text p {
-      color: #6c757d;
+      color: var(--gray-text);
       font-size: 1rem;
     }
     .search-wrapper {
       display: flex;
       margin-bottom: 25px;
+      position: relative;
     }
-    /* Se elimina maxlength del input para controlar la cantidad en código */
     .search-input {
-      flex-grow: 1;
-      padding: 12px 15px;
+      width: 100%;
+      padding: 14px 16px;
       border: 2px solid var(--border-soft);
       border-radius: 8px;
       font-size: 1rem;
@@ -81,6 +93,8 @@
       background-color: #f8f9fa;
       border-radius: 8px;
       padding: 20px;
+      min-height: 100px;
+      transition: all 0.3s ease;
     }
     .resultado-item {
       background-color: white;
@@ -90,8 +104,12 @@
       margin-bottom: 15px;
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       cursor: pointer;
       transition: all 0.3s ease;
+    }
+    .resultado-item:last-child {
+      margin-bottom: 0;
     }
     .resultado-item:hover {
       transform: translateY(-3px);
@@ -99,18 +117,21 @@
     }
     .resultado-detalle {
       flex-grow: 1;
+      padding-right: 10px;
     }
     .resultado-nombre {
       font-weight: 600;
       color: var(--primary-color);
       margin-bottom: 5px;
+      word-break: break-word;
     }
     .resultado-documento {
-      color: #6c757d;
+      color: var(--gray-text);
       font-size: 0.9rem;
+      margin-bottom: 2px;
     }
     .resultado-numero {
-      color: #6c757d;
+      color: var(--gray-text);
       font-size: 0.9rem;
       margin-bottom: 5px;
     }
@@ -118,46 +139,156 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      min-width: 100px;
+      text-align: right;
     }
     .resultado-copy,
     .resultado-buscar {
       font-weight: 500;
       cursor: pointer;
       margin-bottom: 5px;
-      text-align: right;
+      padding: 5px 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      text-align: center;
     }
     .resultado-copy {
       color: var(--secondary-color);
+      background-color: rgba(0,123,255,0.1);
+    }
+    .resultado-copy:hover {
+      background-color: rgba(0,123,255,0.2);
     }
     .resultado-buscar {
-      color: #28a745;
+      color: var(--success-color);
       font-size: 0.8rem;
+      background-color: rgba(40,167,69,0.1);
+    }
+    .resultado-buscar:hover {
+      background-color: rgba(40,167,69,0.2);
     }
     #mensaje-copia {
       position: fixed;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(0,0,0,0.7);
+      background-color: rgba(0,0,0,0.8);
       color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 12px 24px;
+      border-radius: 8px;
       display: none;
       z-index: 1000;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    @media (max-width: 640px) {
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray-text);
+    }
+    .empty-state p {
+      margin-bottom: 0;
+    }
+    
+    /* Media Queries para Responsive Design */
+    @media (max-width: 768px) {
       .container {
-        margin: 20px 15px;
-        padding: 20px;
+        padding: 25px 20px;
+      }
+      .header-text h1 {
+        font-size: 1.8rem;
+      }
+      .header-logo img {
+        width: 70px;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      body {
+        padding: 15px;
+      }
+      .container {
+        padding: 20px 15px;
+        border-radius: 10px;
       }
       .header {
         flex-direction: column;
         text-align: center;
+        margin-bottom: 20px;
       }
       .header-logo {
         margin-right: 0;
         margin-bottom: 15px;
       }
+      .header-logo img {
+        width: 60px;
+      }
+      .header-text h1 {
+        font-size: 1.6rem;
+        margin-bottom: 5px;
+      }
+      .header-text p {
+        font-size: 0.9rem;
+      }
+      .search-input {
+        padding: 12px 14px;
+      }
+      #resultados {
+        padding: 15px;
+      }
+      .resultado-item {
+        padding: 12px;
+        flex-direction: column;
+      }
+      .resultado-detalle {
+        width: 100%;
+        padding-right: 0;
+        margin-bottom: 15px;
+      }
+      .resultado-actions {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .resultado-copy,
+      .resultado-buscar {
+        margin: 0;
+        padding: 8px 12px;
+        flex: 1;
+        max-width: 48%;
+      }
+      .resultado-copy {
+        margin-right: 8px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px 12px;
+      }
+      .header-text h1 {
+        font-size: 1.4rem;
+      }
+      .resultado-item {
+        margin-bottom: 10px;
+      }
+      .resultado-nombre {
+        font-size: 0.95rem;
+      }
+      .resultado-documento,
+      .resultado-numero {
+        font-size: 0.85rem;
+      }
+    }
+    
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .resultado-item {
+      animation: fadeIn 0.3s ease forwards;
     }
   </style>
 </head>
@@ -176,7 +307,11 @@
     <div class="search-wrapper">
       <input type="text" id="buscador" class="search-input" placeholder="Ingrese hasta 9 dígitos" />
     </div>
-    <div id="resultados"></div>
+    <div id="resultados">
+      <div class="empty-state">
+        <p>Ingrese al menos 5 dígitos para buscar</p>
+      </div>
+    </div>
   </div>
   <script>
     let registros = [];
@@ -188,6 +323,10 @@
         parseCSV(data);
       } catch (error) {
         console.error("Error al cargar CSV:", error);
+        document.getElementById('resultados').innerHTML = `
+          <div class="resultado-item">
+            <p>Error al cargar los datos. Por favor, intente nuevamente más tarde.</p>
+          </div>`;
       }
     }
 
@@ -259,13 +398,15 @@
           const copyDiv = document.createElement('div');
           copyDiv.className = "resultado-copy";
           copyDiv.textContent = "Copiar";
-          copyDiv.addEventListener('click', () => {
+          copyDiv.addEventListener('click', function(e) {
+            e.stopPropagation();
             const textoACopiar = "Titular de la línea: Nombre: " + reg['NOMBRE'] + " - DNI: " + reg['DOCUMENTO'];
             const textoOriginal = copyDiv.textContent;
             copyDiv.textContent = "Copiado!";
             navigator.clipboard.writeText(textoACopiar).catch(err => {
               console.error("Error al copiar:", err);
             });
+            mostrarMensajeCopia();
             setTimeout(() => {
               copyDiv.textContent = textoOriginal;
             }, 2000);
@@ -277,13 +418,15 @@
           const copyDiv = document.createElement('div');
           copyDiv.className = "resultado-copy";
           copyDiv.textContent = "Copiar DNI";
-          copyDiv.addEventListener('click', () => {
+          copyDiv.addEventListener('click', function(e) {
+            e.stopPropagation();
             const textoACopiar = reg['DOCUMENTO'];
             const textoOriginal = copyDiv.textContent;
             copyDiv.textContent = "DNI copiado";
             navigator.clipboard.writeText(textoACopiar).catch(err => {
               console.error("Error al copiar:", err);
             });
+            mostrarMensajeCopia();
             setTimeout(() => {
               copyDiv.textContent = textoOriginal;
             }, 2000);
@@ -293,7 +436,8 @@
           const buscarDiv = document.createElement('div');
           buscarDiv.className = "resultado-buscar";
           buscarDiv.textContent = "Buscar Nombre";
-          buscarDiv.addEventListener('click', () => {
+          buscarDiv.addEventListener('click', function(e) {
+            e.stopPropagation();
             window.open(`https://eldni.com/pe/buscar-por-dni?dni=${encodeURIComponent(reg['DOCUMENTO'] || "")}`, '_blank');
           });
           acciones.appendChild(buscarDiv);
@@ -309,6 +453,14 @@
       });
     }
 
+    function mostrarMensajeCopia() {
+      const mensajeCopia = document.getElementById('mensaje-copia');
+      mensajeCopia.style.display = 'block';
+      setTimeout(() => {
+        mensajeCopia.style.display = 'none';
+      }, 2000);
+    }
+
     // Se muestran resultados solo si se ingresan al menos 5 dígitos.
     // Si se ingresan más de 5 dígitos se utiliza siempre la parte de los 5 primeros para la búsqueda.
     document.getElementById('buscador').addEventListener('input', function() {
@@ -322,7 +474,10 @@
       this.value = formatNumber(rawValue);
 
       if (rawValue.length < 5) {
-        document.getElementById('resultados').innerHTML = "";
+        document.getElementById('resultados').innerHTML = `
+          <div class="empty-state">
+            <p>Ingrese al menos 5 dígitos para buscar</p>
+          </div>`;
         return;
       }
 
@@ -331,7 +486,22 @@
       mostrarResultados(resultados, searchTerm);
     });
 
-    cargarCSV();
+    // Detectar cuando se está usando en dispositivo móvil para ajustes especiales
+    function checkMobile() {
+      const container = document.querySelector('.container');
+      if (window.innerWidth <= 640) {
+        container.style.borderRadius = '10px';
+      } else {
+        container.style.borderRadius = '12px';
+      }
+    }
+
+    // Event listeners
+    window.addEventListener('resize', checkMobile);
+    window.addEventListener('load', function() {
+      cargarCSV();
+      checkMobile();
+    });
   </script>
 </body>
 </html>
